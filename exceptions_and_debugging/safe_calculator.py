@@ -63,3 +63,25 @@ Calculation finished
 =================================================
 
 """
+
+def safe_divide(a, b):
+    try:
+        a = float(a)
+        b = float(b)
+        if b == 0:
+            return ("error", "Cannot divide by zero")
+        return ("ok", a / b)
+    except ValueError:
+        return ("error", "Inputs must be numbers")
+    except Exception as e:
+        return ("error", f"An unexpected error occurred: {str(e)}")
+
+# Main program: Get user input
+if __name__ == "__main__":
+    num1 = input("Enter the numerator: ")
+    num2 = input("Enter the denominator: ")
+    result = safe_divide(num1, num2)
+    print(result)
+    print("Calculation finished")
+
+    

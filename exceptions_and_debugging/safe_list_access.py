@@ -77,3 +77,70 @@ Output Example 3:
 =================================================
 
 """
+def safe_get(items, index):
+    try:
+        return ("ok", items[index])
+    except IndexError:
+        return ("error", "Index out of range")
+    except TypeError:
+        return ("error", "Index must be an int")
+    except Exception as e:
+        return ("error", f"Unexpected error: {str(e)}")
+    
+if __name__ == "__main__":
+    print("=== Safe List Access ===\n")
+    print("Options:")
+    print("1. Run test cases")
+    print("2. Input custom list and index")
+    
+    choice = input("\nEnter your choice (1 or 2): ").strip()
+    
+    if choice == "2":
+        # Custom input
+        print("\nEnter a list of integers separated by commas.")
+        print("Example: 10, 20, 30, 40")
+        list_input = input("Enter list: ").strip()
+        
+        try:
+            items = [int(x.strip()) for x in list_input.split(",")]
+            print(f"  ✓ List created: {items}")
+        except ValueError:
+            print("  ✗ Invalid input. Please enter integers separated by commas.")
+            exit()
+        
+        print("\nEnter an index (can be an integer, string, float, etc.)")
+        index_input = input("Enter index: ").strip()
+        
+        # Try to convert to int, but also test other types
+        try:
+            index = int(index_input)
+        except ValueError:
+            # Keep as string or try other conversions
+            if index_input.replace(".", "", 1).isdigit():
+                index = float(index_input)
+            else:
+                index = index_input  # Keep as string
+        
+        print(f"  Testing with index: {repr(index)} (type: {type(index).__name__})")
+        result = safe_get(items, index)
+        print(f"\nResult: {result}")
+    else:
+        # Test cases
+        print("\nRunning test cases...\n")
+        test_cases = [
+            ([10, 20, 30, 40], 2, "('ok', 30)"),
+            ([10, 20, 30], 7, "('error', 'Index out of range')"),
+            ([10, 20, 30], "1", "('error', 'Index must be an int')"),
+            (None, 0, "('error', 'Unexpected error: ...')"),
+            ([10, 20, 30], -1, "('ok', 30)"),
+            ([10, 20, 30], 1.5, "('error', 'Index must be an int')"),
+            ([10, 20, 30], 0, "('ok', 10)"),
+            ([10, 20, 30], 3, "('error', 'Index out of range')"),
+        ]
+        
+        for items, index, expected in test_cases:
+            result = safe_get(items, index)
+            status = "✓" if expected in str(result) else "✗"
+            print(f"{status} safe_get({items}, {repr(index)}) = {result}")
+
+    
